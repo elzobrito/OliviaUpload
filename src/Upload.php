@@ -80,7 +80,7 @@ class Upload
     {
         if ($this->arqError == 0 && $this->valida_extensao() && $this->valida_tamanho()) {
             if ($this->arqNameCripto != "") {
-                return move_uploaded_file($this->arqTemp, __DIR__ .  DIRECTORY_SEPARATOR . $this->pasta .  DIRECTORY_SEPARATOR . $this->arqNameCripto);
+                return move_uploaded_file($this->arqTemp, $this->pasta .  DIRECTORY_SEPARATOR . $this->arqNameCripto);
             } else {
 
                 return move_uploaded_file($this->arqTemp, $this->pasta . $this->arqName);
@@ -90,7 +90,7 @@ class Upload
 
     public function delete_file()
     {
-        $arquivo = __DIR__ .  DIRECTORY_SEPARATOR . $this->pasta . DIRECTORY_SEPARATOR . ($this->arqNameCripto != null ? $this->arqNameCripto : $this->arqName);
+        $arquivo = $this->pasta . DIRECTORY_SEPARATOR . ($this->arqNameCripto != null ? $this->arqNameCripto : $this->arqName);
         if (is_file($arquivo))
             unlink($arquivo);
     }
@@ -99,16 +99,17 @@ class Upload
     {
         if ($this->arqError == 0) {
             if ($this->permissao != null)
-                chmod(__DIR__ .  DIRECTORY_SEPARATOR . $this->pasta, 0777);
+                chmod($this->pasta, 0777);
             $this->mover();
             if ($this->permissao != null)
-                chmod(__DIR__ .  DIRECTORY_SEPARATOR . $this->pasta, 0775);
+                chmod($this->pasta, 0775);
         }
     }
 
     function __construct($pasta, $tamanho, $extensoes, $arquivo, $renomear, $permissao = null)
     {
-        $this->pasta = $pasta;
+        $this->pasta = $_SERVER['DOCUMENT_ROOT'] . $_SERVER['REQUEST_URI'] .  DIRECTORY_SEPARATOR . $pasta;
+
         $this->tamanho = $tamanho;
         $this->extensoes = $extensoes;
         $this->arquivo = $arquivo;
